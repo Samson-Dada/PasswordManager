@@ -364,5 +364,6 @@ FodyWeavers.xsd
 
 # custom folder for development only
 
-DesignProcess/Design.txt
+DesignProcess/Designs.txt
 DesignProcess/Process.txt
+DesignProcess
