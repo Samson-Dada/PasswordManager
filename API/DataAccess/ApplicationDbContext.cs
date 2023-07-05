@@ -1,21 +1,17 @@
-﻿using API.Models;
+﻿using API.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.DataAccess
 {
-    public class ApplicationDbContext: DbContext
+    public class ApplicationDbContext:DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :base(options)
         {
             
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            EntitiesSeedData.SeedData(modelBuilder);
-        }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Password> Passwords { get; set; }
+      public  DbSet<User> Users { get; set; }
+      public  DbSet<Password> Passwords { get; set; }
     }
 }

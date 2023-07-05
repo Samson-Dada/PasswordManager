@@ -21,7 +21,7 @@ namespace API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("API.Models.Password", b =>
+            modelBuilder.Entity("API.Entities.Password", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -29,21 +29,26 @@ namespace API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("EncryptedPassword")
+                    b.Property<string>("Date")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HashedPassword")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Passwords");
                 });
 
-            modelBuilder.Entity("API.Models.User", b =>
+            modelBuilder.Entity("API.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,7 +59,7 @@ namespace API.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("UserPassword")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
@@ -63,22 +68,22 @@ namespace API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "johnd@mail.com",
-                            Password = "12345333ddd",
-                            Username = "keepy"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Email = "johnd@mail.com",
-                            Password = "12345333ddd",
-                            Username = "keepy"
-                        });
+            modelBuilder.Entity("API.Entities.Password", b =>
+                {
+                    b.HasOne("API.Entities.User", "User")
+                        .WithMany("Password")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("API.Entities.User", b =>
+                {
+                    b.Navigation("Password");
                 });
 #pragma warning restore 612, 618
         }

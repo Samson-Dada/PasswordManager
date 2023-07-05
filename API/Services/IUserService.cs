@@ -1,4 +1,4 @@
-﻿using API.Models;
+﻿using API.Entities;
 
 namespace API.Services
 {
@@ -9,5 +9,10 @@ namespace API.Services
         Task<IEnumerable<User>> GetAllUserAsync();
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(User user);
+        Task<bool> UserAlreadyExist(string userName);
+        Task UpdateUserNameAsync(int userId, string userName);
+        Task<User> GetUserByUserNameAsync(string userName);
+        Task<User> GetUserNameWithPasswordAsync(string userName);
+        Task GetUserNameWithAllPasswordAsync(User user);
     }
 }

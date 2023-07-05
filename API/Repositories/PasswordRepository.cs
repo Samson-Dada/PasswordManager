@@ -1,43 +1,76 @@
 ﻿using API.DataAccess;
-using API.Models;
+using API.Entities;
+using API.Utilities;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace API.Repositories
 {
-    public class PasswordRepository: IPasswordRepository
+    public class PasswordRepository:IPasswordRepository
     {
         private readonly ApplicationDbContext _dbContext;
         public PasswordRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
-
-        public async Task<Password> GetByIdAsync(int id)
+        public async Task<IEnumerable<Password>> GetAll()
         {
-            var password = await _dbContext.Passwords.FindAsync(id);
-            return password;
+            var passwords = await _dbContext.Passwords.ToListAsync();
+            return passwords;
         }
 
-        public async Task AddAsync(Password password)
+        public async Task GetById(int id)
         {
-          await  _dbContext.Passwords.AddAsync(password);
-        }
-      
-
-        public Task CreateAsync(Password password)
-        {
-            throw new NotImplementedException();
+          var password =  await _dbContext.Passwords.SingleOrDefaultAsync(x => x.Id == id);
+            if(password is null)
+            {
+                return;
+            }
         }
 
-        public Task UpdateAsync(Password password)
+        public async Task Create(User existingUser, Password password)
         {
-            _dbContext.Passwords.Update(password);
-            return Task.CompletedTask;
+            string salt = BCrypt.Net.BCrypt.GenerateSalt();
+            BCrypt.Net.BCrypt.HashPassword(password.HashedPassword, salt);
+            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Username == existingUser.Username);
+            if(user is null)
+            {
+                return;
+            }
+            user = existingUser;
+             existingUser.Password.Add(password);
+          await  _dbContext.SaveChangesAsync();
         }
 
-        public Task DeleteAsync(Password password)
+        public async Task AddPassword(User existingUser, string title, string hashedPassword)
         {
-           _dbContext.Remove(password);
-            return Task.CompletedTask;
+            var newPassword = new Password
+            {
+                Title = title,
+                HashedPassword = hashedPassword
+            };
+
+            existingUser.Password.Add(newPassword);
+            await _dbContext.SaveChangesAsync();
         }
-    }
+
+        public string HashPassword(string password)
+        {
+
+            return PasswordEncrypt.PasswordData(password);
+            //    using SHA256 sha256 = SHA256.Create();
+            //    byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+            //    byte[] hashedBytes = sha256.ComputeHash(passwordBytes);
+
+            //    string hashedPassword = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            //    return hashedPassword;
+            }
+        }
 }
+
+
+
+
+///  a method that create passoword when existing
+///  user is provided, without creating another one/

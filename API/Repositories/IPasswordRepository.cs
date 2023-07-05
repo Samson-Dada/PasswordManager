@@ -1,13 +1,16 @@
-﻿using API.Models;
+﻿using API.Entities;
+using System.Threading.Tasks;
 
 namespace API.Repositories
 {
     public interface IPasswordRepository
     {
+        //    Task<IEnumerable<Password>> GetAll();
+        Task<IEnumerable<Password>> GetAll();
+        Task GetById(int id);
+        Task Create(User existingUser, Password password);
+        //    Task Update(Password password);
+        string HashPassword(string password);
 
-        Task<Password> GetByIdAsync(int id);
-        Task CreateAsync(Password password);
-        Task UpdateAsync(Password password);
-        Task DeleteAsync(Password password);
     }
 }
