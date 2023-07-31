@@ -6,7 +6,6 @@ using API.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
 
 namespace API.Controllers
 {
@@ -25,17 +24,10 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [ResponseCache(Duration =120)]
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var users = await _userService.GetAllUserAsync();
-            return Ok(users);
-        }
 
-
-        [HttpGet("{userId}", Name = "GetById")]
-        public async Task<IActionResult> GetById(int userId)
+        // Get user by id
+        [HttpGet("{userId}", Name = "GetUserById")]
+        public async Task<IActionResult> GetUserById(string userId)
         {
             try
             {
@@ -56,34 +48,14 @@ namespace API.Controllers
         }
 
 
-        [HttpGet("username")]
-        public async Task<IActionResult> GetUserByName(string username)
-        {
-            try
-            {
-                var user = await _userService.GetUserNameWithPasswordAsync(username);
-                if (user is null)
-                {
-
-                    return NotFound($" Cannot found \"{username}\" try something else");
-                }
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
-
-
         //check result and implemtation purpose
         [HttpPut("{userId}")]
-        public async Task<IActionResult> Update(int userId, [FromBody] User user)
+        public async Task<IActionResult> Update(string userId, [FromBody] User user)
         {
             try
             {
 
-                if (user is null || userId == 0 || user.Id != userId)
+                if (user is null || userId == null || user.Id != userId)
                 {
                     return NotFound($" Cannot found user {user.Id}");
                 }
@@ -107,9 +79,7 @@ namespace API.Controllers
         }
 
 
-
-        ///////
-
+        // Save or keep password 
         [HttpPost("passwords")]
         public async Task<IActionResult> AddPassword(string username, [FromForm] PasswordCreationDto passwordCreationDto)
         {
@@ -124,6 +94,7 @@ namespace API.Controllers
                 var hashedPassword = _passwordService.HashedPassword(passwordCreationDto.HashedPassword);
                 var passwordEntity = _mapper.Map<Password>(passwordCreationDto);
                 passwordEntity.HashedPassword = hashedPassword;
+               passwordEntity.Id = Guid.NewGuid().ToString().Remove(8);
 
                 // Format the date
                 string formattedDate = DateFormatter.DateFormat();
@@ -133,7 +104,7 @@ namespace API.Controllers
                 await _userService.UpdateUserAsync(user);
 
                 var userPasswordDto = _mapper.Map<UserPasswordCreationDto>(user);
-                return CreatedAtRoute(nameof(GetById), new { userId = user.Id }, userPasswordDto);
+                return CreatedAtRoute(nameof(GetUserById), new { userId = user.Id }, userPasswordDto);
             }
             catch (Exception ex)
             {
@@ -145,74 +116,45 @@ namespace API.Controllers
         // change to use Dto
         // for update username
         [HttpPut("{userId}/username")]
-        public async Task<IActionResult> UpdateUserName(int userId, [FromBody] User userForUpdateDto)
+        public async Task<IActionResult> UpdateUserName(string userId, [FromBody] UserForUpdateUserNameDto userForUpdateUserNameDto)
         {
-            if (userId == 0 || userForUpdateDto.Username == null)
+            if (userId == null || userForUpdateUserNameDto.Username == null)
             {
                 return NotFound();
             }
 
-            if (await _userService.UserAlreadyExist(userForUpdateDto.Username))
+            if (await _userService.UserAlreadyExist(userForUpdateUserNameDto.Username))
             {
-                return BadRequest($"Username \"{userForUpdateDto.Username}\"  has already been used. Please update to another one.");
+                return BadRequest($"Username \"{userForUpdateUserNameDto.Username}\"  has already been used. Please update to another one.");
             }
-            await _userService.UpdateUserNameAsync(userId, userForUpdateDto.Username);
-            return Ok(userForUpdateDto.Username);
+            await _userService.UpdateUserNameAsync(userId, userForUpdateUserNameDto.Username);
+            return Ok(userForUpdateUserNameDto.Username);
         }
 
+        /****************/
 
-        //////////////////////
+
 
         //[HttpPut("{userId}/username")]
-        //public async Task<IActionResult> UpdateUserName(int userId, [FromBody] User user)
+        //public async Task<IActionResult> UpdateUserName(string userId, [FromBody] User userForUpdateDto)
         //{
-        //    if (userId == 0 || user.Username == null)
+        //    if (userId == null || userForUpdateDto.Username == null)
         //    {
         //        return NotFound();
         //    }
 
-        //    if (await _userService.UserAlreadyExist(user.Username))
+        //    if (await _userService.UserAlreadyExist(userForUpdateDto.Username))
         //    {
-        //        return BadRequest($"Username \"{user.Username}\"  has already been used. Please update to another one.");
+        //        return BadRequest($"Username \"{userForUpdateDto.Username}\"  has already been used. Please update to another one.");
         //    }
-        //    await _userService.UpdateUserNameAsync(userId, user.Username);
-        //    return Ok(user.Username);
+        //    await _userService.UpdateUserNameAsync(userId, userForUpdateDto.Username);
+        //    return Ok(userForUpdateDto.Username);
         //}
 
 
 
-
-
-        [HttpGet("passwords")]
-        public async Task<IActionResult> GetAllPasswordByUserName(string username)
-        {
-            try
-            {
-
-                var user = await _userService.GetUserByUserNameAsync(username);
-                if (user is null)
-                {
-                    return NotFound($"Cannot find username: \"{username}\". Please try something else.");
-                }
-
-                await _userService.GetUserNameWithAllPasswordAsync(user);
-
-                var userDto = _mapper.Map<UserForGetDto>(user);
-                //userDto.Password = new List<PasswordForGetDto>(); // Initialize the Password property
-
-                return Ok(userDto);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-
-            }
-        }
-
-
-
         [HttpDelete("{userId}")]
-        public async Task<IActionResult> Delete(int userId)
+        public async Task<IActionResult> Delete(string userId)
         {
             try
             {
@@ -231,8 +173,15 @@ namespace API.Controllers
             }
         }
 
+        /* Action for password*/
 
-
+        [HttpGet]
+        [Route("passwords")]
+        public async Task<IActionResult> GetAll()
+        {
+            var password = await _passwordService.GetAllPassowordAsync();
+            return Ok(password);
+        }
     }
 }
 

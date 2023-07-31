@@ -15,6 +15,11 @@ namespace API.Profiles
             CreateMap<UserForGetDto, User>()
              .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password));
 
+
+            // Update Username
+
+            CreateMap<User,UserForUpdateUserNameDto>();
+
             //
             CreateMap<UserForSignupDto, User>();
 
@@ -27,7 +32,7 @@ namespace API.Profiles
 
             //Update Map
 
-            CreateMap<UserForUpdateDto,User>();
+            CreateMap<UserForUpdateDto1,User>();
         }
     }
 }

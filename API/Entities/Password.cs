@@ -4,10 +4,11 @@ namespace API.Entities
 {
     public class Password
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
+        public string Id { get; set; }
         public string Title { get; set; }
         public string HashedPassword { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public string Date { get; set; }
         [JsonIgnore]
         public User User { get; set; }

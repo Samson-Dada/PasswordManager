@@ -14,12 +14,7 @@ namespace API.Controllers
             _passwordService = passwordService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var password = await _passwordService.GetAllPassowordAsync();
-            return Ok(password);
-        }
+       
 
     }
 }

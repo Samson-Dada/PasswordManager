@@ -20,7 +20,7 @@ namespace API.Repositories
             return passwords;
         }
 
-        public async Task GetById(int id)
+        public async Task GetById(string id)
         {
           var password =  await _dbContext.Passwords.SingleOrDefaultAsync(x => x.Id == id);
             if(password is null)
@@ -39,26 +39,48 @@ namespace API.Repositories
                 return;
             }
             user = existingUser;
+            password.Id = Guid.NewGuid().ToString();
              existingUser.Password.Add(password);
           await  _dbContext.SaveChangesAsync();
         }
 
-        public async Task AddPassword(User existingUser, string title, string hashedPassword)
-        {
-            var newPassword = new Password
-            {
-                Title = title,
-                HashedPassword = hashedPassword
-            };
+        //public async Task AddPassword(User existingUser, string title, string hashedPassword)
+        //{
+        //    var newPassword = new Password
+        //    {
+        //        Title = title,
+        //        HashedPassword = hashedPassword
+        //    };
 
-            existingUser.Password.Add(newPassword);
-            await _dbContext.SaveChangesAsync();
+        //    existingUser.Password.Add(newPassword);
+        //    await _dbContext.SaveChangesAsync();
+        //}
+
+
+
+        // Continue from here
+        public async Task<IEnumerable<Password>> SearchPassword(string passwordTitle)
+        {
+            if(string.IsNullOrEmpty(passwordTitle) && string.IsNullOrWhiteSpace(passwordTitle))
+                {
+                return await GetAll();
+            }
+            var collection  = _dbContext.Passwords as IQueryable<Password>;
+
+            if(!string.IsNullOrWhiteSpace(passwordTitle))
+            {
+                passwordTitle = passwordTitle.Trim();
+                collection = collection.Where(t => t.Title.Contains(passwordTitle));
+            }
+
+            Task<List<Password>> task = collection.OrderBy(x => x.Title).ToListAsync();
+            return await task;
         }
 
         public string HashPassword(string password)
         {
 
-            return PasswordEncrypt.PasswordData(password);
+            return PasswordHash.GenerateHashPassword(password);
             //    using SHA256 sha256 = SHA256.Create();
             //    byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
             //    byte[] hashedBytes = sha256.ComputeHash(passwordBytes);

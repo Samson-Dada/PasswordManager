@@ -21,7 +21,7 @@ namespace API.Services
             return users;
         }
 
-        public async Task<User> GetUserByIdAsync(int id)
+        public async Task<User> GetUserByIdAsync(string id)
         {
             var user = await _userRepository.GetById(id);
             if (user is null)
@@ -41,7 +41,7 @@ namespace API.Services
             return _userRepository.Delete(user);
         }
 
-        public async Task UpdateUserNameAsync(int userId, string userName)
+        public async Task UpdateUserNameAsync(string userId, string userName)
         {
            await  _userRepository.UpdateUser(userId, userName);
         }
@@ -66,6 +66,12 @@ namespace API.Services
         public async Task GetUserNameWithAllPasswordAsync(User user)
         {
             await _userRepository.GetAllPassword(user);
+        }
+
+        public Task<IEnumerable<User>> AllUserByPagination(int pageNumber, int pageSize)
+        {
+           var users = _userRepository.GetAllUserByPagination(pageNumber, pageSize);
+            return users;
         }
     }
 }

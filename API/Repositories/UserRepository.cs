@@ -8,6 +8,7 @@ namespace API.Repositories
     public class UserRepository: IUserRepository
     {
         private readonly ApplicationDbContext _dbContext;
+        int _maxPageSize = 3;
         public UserRepository(ApplicationDbContext dbContext ) 
         {
             _dbContext = dbContext;
@@ -27,6 +28,7 @@ namespace API.Repositories
         {
             //string salt = BCrypt.Net.BCrypt.GenerateSalt();
             //user.Password = BCrypt.Net.BCrypt.HashPassword(user., salt);
+
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
             await _dbContext.Users.Include(u => u.Password).ToListAsync();
@@ -39,7 +41,7 @@ namespace API.Repositories
             await Task.CompletedTask;
         }
 
-        public async Task<User> GetById(int id)
+        public async Task<User> GetById(string id)
         {
             var userId = await _dbContext.Users.Include(u => u.Password).SingleOrDefaultAsync(u => u.Id == id);
             if (userId is null)
@@ -74,7 +76,7 @@ namespace API.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateUser(int userId, string newUsername)
+        public async Task UpdateUser(string userId, string newUsername)
         {
             var existingUser = await _dbContext.Users.FindAsync(userId);
 
@@ -121,5 +123,32 @@ namespace API.Repositories
         {
             await _dbContext.Users.Include(p => p.Password).ToListAsync();
         }
+
+        public async Task<IEnumerable<User>> GetAllUserByPagination(int pageNumber, int pageSize)
+        {
+            var collection = _dbContext.Users as IQueryable<User>;
+            if (pageNumber < 1 || pageSize < 1)
+            {
+                pageSize = 1;
+                pageNumber = pageSize;
+            }
+
+            if (pageNumber <= 0)
+            {
+                pageNumber = 1;
+            }
+            if(pageSize > _maxPageSize)
+            {
+                pageSize = _maxPageSize;
+            }
+            int pageToSkip = (pageNumber - 1) * pageSize;
+            var userCollection =await collection
+                .OrderBy(n => n.Username)
+                .Skip(pageToSkip)
+                .Take(pageSize)
+                .ToListAsync();
+            return userCollection;
+        }
+
     }
 }

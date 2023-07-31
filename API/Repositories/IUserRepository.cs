@@ -7,12 +7,13 @@ namespace API.Repositories
         Task<IEnumerable<User>> GetAll();
         Task Create(User user);
         Task Delete(User user);
-        Task<User> GetById(int id);
+        Task<User> GetById(string id);
         Task Update(User user);
         Task<bool> AlreadyExist(string userName);
-        Task UpdateUser(int userId, string newUsername);
+        Task UpdateUser(string userId, string newUsername);
         Task<User> GetUserByName(string userName);
         Task<User> GetUserByNameWithPassword(string username);
         Task GetAllPassword(User user);
+        Task<IEnumerable<User>> GetAllUserByPagination(int pageNumber, int pageSize);
     }
 }

@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace API.Models.UserDto
 {
-    public class UserForUpdateDto
+    public class UserForUpdateDto1
     {
 
-        public UserForUpdateDto()
+        public UserForUpdateDto1()
         {
             Password = new List<Password>();
         }

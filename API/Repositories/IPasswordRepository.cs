@@ -7,7 +7,7 @@ namespace API.Repositories
     {
         //    Task<IEnumerable<Password>> GetAll();
         Task<IEnumerable<Password>> GetAll();
-        Task GetById(int id);
+        Task GetById(string id);
         Task Create(User existingUser, Password password);
         //    Task Update(Password password);
         string HashPassword(string password);

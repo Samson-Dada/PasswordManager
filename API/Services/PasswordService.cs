@@ -17,7 +17,7 @@ namespace API.Services
             return passwords;
         }
 
-        public async Task GetPasswordByIdAsync(int id)
+        public async Task GetPasswordByIdAsync(string id)
         {
              await  _passwordRepository.GetById(id);
         }
