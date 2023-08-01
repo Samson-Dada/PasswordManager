@@ -72,4 +72,3 @@ public class RegisterController : ControllerBase
         }
     }
 }
-//98a6910a-d9d2-4c1b-a4f1-264a7353af1b

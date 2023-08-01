@@ -16,6 +16,7 @@ namespace API.Controllers
         private readonly IUserService _userService;
         private readonly IPasswordService _passwordService;
         private readonly IMapper _mapper;
+        private readonly IEmailService _emailService;
 
         public UserController(IUserService userService, IPasswordService passwordService, IMapper mapper)
         {
@@ -94,15 +95,14 @@ namespace API.Controllers
                 var hashedPassword = _passwordService.HashedPassword(passwordCreationDto.HashedPassword);
                 var passwordEntity = _mapper.Map<Password>(passwordCreationDto);
                 passwordEntity.HashedPassword = hashedPassword;
-               passwordEntity.Id = Guid.NewGuid().ToString().Remove(8);
-
-                // Format the date
+                passwordEntity.Id = Guid.NewGuid().ToString();
                 string formattedDate = DateFormatter.DateFormat();
                 passwordEntity.Date = formattedDate;
 
                 user.Password.Add(passwordEntity);
                 await _userService.UpdateUserAsync(user);
-
+                await _emailService.SendMail(EmailContent.EmailRecipent(),
+                     EmailContent.EmailSubject(), EmailContent.Emailbody());
                 var userPasswordDto = _mapper.Map<UserPasswordCreationDto>(user);
                 return CreatedAtRoute(nameof(GetUserById), new { userId = user.Id }, userPasswordDto);
             }
