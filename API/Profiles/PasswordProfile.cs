@@ -1,5 +1,5 @@
-﻿using API.Entities;
-using API.Models.PasswordDto;
+﻿using API.Shared.Entities;
+using API.Shared.Models.PasswordDto;
 using AutoMapper;
 
 namespace API.Profiles

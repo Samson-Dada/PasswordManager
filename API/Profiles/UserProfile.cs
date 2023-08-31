@@ -1,5 +1,5 @@
-﻿using API.Entities;
-using API.Models.UserDto;
+﻿using API.Shared.Entities;
+using API.Shared.Models.UserDto;
 using AutoMapper;
 
 namespace API.Profiles

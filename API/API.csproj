@@ -18,11 +18,12 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
+		<PackageReference Include="MimeKit" Version="4.1.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	</ItemGroup>
 
 
 	<ItemGroup>
-	  <Folder Include="Utilities\Encryptions\" />
+	  <Folder Include="Shared\Utilities\Encryptions\" />
 	</ItemGroup>
 </Project>
