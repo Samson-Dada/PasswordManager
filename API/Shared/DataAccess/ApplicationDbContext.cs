@@ -1,9 +1,11 @@
 ﻿using API.Shared.Entities;
+using API.Shared.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Shared.DataAccess
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -11,7 +13,7 @@ namespace API.Shared.DataAccess
         }
 
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Password> Passwords { get; set; }
+        //public DbSet<User> AUsers { get; set; }
+        //public DbSet<Password> Passwords { get; set; }
     }
 }

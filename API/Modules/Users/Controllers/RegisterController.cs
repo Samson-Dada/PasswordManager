@@ -4,6 +4,7 @@ using API.Shared.Utilities;
 using SharedUser = API.Shared.Entities;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 // At the top of your code file
 
 namespace API.Modules.Users.Controllers;
@@ -21,54 +22,95 @@ public class RegisterController : ControllerBase
     }
 
 
-    [HttpGet("{id}", Name = "GetRegisterById")]
-    public async Task<IActionResult> GetById(string userId)
-    {
-        try
-        {
+    //[HttpPost]
+    //[Route("adds")]
+    //public async Task<IActionResult> CreateUser([FromForm] UserForSignupDto userForSignupDto)
+    //{
+    //    try
+    //    {
 
-            var user = await _userService.GetUserByIdAsync(userId);
+    //        if (!ModelState.IsValid)
+    //        {
+    //            return BadRequest("Invalid user data");
+    //        }
+    //        if (await _userService.UserAlreadyExists(userForSignupDto.UserName))
+    //        {
+    //            return BadRequest("Username already exist");
+    //        }
+    //        var userDto = _mapper.Map<IdentityUser>(userForSignupDto);
+    //        //userDto.Id = Guid.NewGuid().ToString();
+    //        //GuidFormatter.RemoveHyphens(userDto.Id);
 
-            if (user is null)
-            {
-                return NotFound($"{StatusCodes.Status404NotFound} : Cannot find user ID {userId}");
-            }
-            return Ok(user);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+    //        await _userService.CreateUserAsyncs(userDto, userDto.PasswordHash);
+    //        return CreatedAtRoute("GetRegisterById", new { userId = userDto.Id }, userForSignupDto);
+    //    }
 
-        }
-    }
+    //    catch (Exception ex)
+    //    {
+    //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+    //    }
+    //}
 
 
-    [HttpPost]
-    [Route("adds")]
-    public async Task<IActionResult> CreateUser([FromForm] UserForSignupDto userForSignupDto)
-    {
-        try
-        {
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid user data");
-            }
-            if (await _userService.UserAlreadyExist(userForSignupDto.Username))
-            {
-                return BadRequest("Username already exist");
-            }
-            var userDto = _mapper.Map<SharedUser.User>(userForSignupDto);
-            userDto.Id = Guid.NewGuid().ToString();
-            GuidFormatter.RemoveHyphens(userDto.Id);
 
-            await _userService.CreateUserAsync(userDto);
-            return CreatedAtRoute("GetRegisterById", new { userId = userDto.Id }, userForSignupDto);
-        }
 
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        }
-    }
+
+
+    //[HttpGet("{id}", Name = "GetRegisterById")]
+    //public async Task<IActionResult> GetById(string userId)
+    //{
+    //    try
+    //    {
+
+    //        var user = await _userService.GetUserByIdAsync(userId);
+
+    //        if (user is null)
+    //        {
+    //            return NotFound($"{StatusCodes.Status404NotFound} : Cannot find user ID {userId}");
+    //        }
+    //        return Ok(user);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+    //    }
+    //}
+
+
+
+
+
+
+
+
+    //[HttpPost]
+    //[Route("adds")]
+    //public async Task<IActionResult> CreateUser([FromForm] UserForSignupDto userForSignupDto)
+    //{
+    //    try
+    //    {
+
+    //        if (!ModelState.IsValid)
+    //        {
+    //            return BadRequest("Invalid user data");
+    //        }
+    //        if (await _userService.UserAlreadyExist(userForSignupDto.UserName))
+    //        {
+    //            return BadRequest("Username already exist");
+    //        }
+    //        var userDto = _mapper.Map<SharedUser.User>(userForSignupDto);
+    //        userDto.Id = Guid.NewGuid().ToString();
+    //        GuidFormatter.RemoveHyphens(userDto.Id);
+
+    //        await _userService.CreateUserAsync(userDto);
+    //        return CreatedAtRoute("GetRegisterById", new { userId = userDto.Id }, userForSignupDto);
+    //    }
+
+    //    catch (Exception ex)
+    //    {
+    //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+    //    }
+    //}
 }

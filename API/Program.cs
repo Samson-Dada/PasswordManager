@@ -3,19 +3,79 @@ using API.Modules.Services;
 using API.Modules.User.Repositories;
 using API.Modules.User.Services;
 using API.Shared.DataAccess;
+using API.Shared.Entities;
+using API.Shared.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using API.Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddDbContext<ApplicationDbContext>(actionOptions =>
+{
+    actionOptions.UseSqlServer(builder.Configuration.GetConnectionString("PasswordVaultConnection"));
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddRateLimiter(optionAction =>
+//
+
+//For Identity
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+//
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+//
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+//
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IPasswordRepository, PasswordRepository>();
+builder.Services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+//
+
+// Adding Authentication
+builder.Services.AddAuthentication(actionOption =>
 {
-    optionAction.RejectionStatusCode = 330;
+    actionOption.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    actionOption.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    actionOption.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+
+ // Add JWT bearer
+    .AddJwtBearer(options =>
+     {
+         var key = Encoding.UTF8.GetBytes(builder.Configuration["JWTKey:SecretKey"]);
+
+         options.SaveToken = true;
+         options.RequireHttpsMetadata = false;
+         options.TokenValidationParameters = new TokenValidationParameters
+         {
+             ValidateIssuer = true,
+             ValidateAudience = true,
+             ValidIssuer = builder.Configuration["JWTKey:Issuer"],
+             ValidAudience = builder.Configuration["JWTkey:Audience"],
+             ValidateIssuerSigningKey = true,
+             ClockSkew = TimeSpan.Zero,
+             IssuerSigningKey = new SymmetricSecurityKey(key)
+         };
+         { }
+
+    });
+
+builder.Services.AddRateLimiter(actionOption =>
+{
+    actionOption.RejectionStatusCode = 330;
 });
 builder.Services.AddMvc().AddJsonOptions(jsonOptions =>
 {
@@ -32,20 +92,14 @@ builder.Services.AddCors(optionAction =>
         .AllowAnyHeader();
     });
 });
-builder.Services.AddResponseCaching();
-builder.Services.AddDbContext<ApplicationDbContext>(actionOptions =>
+
+builder.Services.AddHealthChecks();
+builder.Services.AddLogging(actionOption =>
 {
-    actionOptions.UseSqlServer(builder.Configuration.GetConnectionString("PasswordVaultConnection"));
+    actionOption.AddJsonConsole();
 });
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
-//
-builder.Services.AddScoped<IAdminRepository, AdminRepository>();
-builder.Services.AddScoped<IAdminService, AdminService>();
-//
-builder.Services.AddScoped<IPasswordService, PasswordService>();
-builder.Services.AddScoped<IPasswordRepository, PasswordRepository>();
+builder.Services.AddResponseCaching();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();
 
@@ -58,6 +112,7 @@ app.UseResponseCaching();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseHealthChecks("/health");
 
 app.MapControllers();
 

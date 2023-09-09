@@ -1,30 +1,51 @@
 ﻿using API.Modules.Services;
 using API.Shared.Models.UserDto;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Modules.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/admins")]
     [ApiController]
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;
-        public AdminController(IAdminService adminService)
+        private readonly ILogger<AdminController> _logger;
+        const int maxUserPageSize = 20;
+        public AdminController(IAdminService adminService, ILogger<AdminController> logger)
         {
             _adminService = adminService;
+            _logger = logger;
         }
 
 
-        [ResponseCache(Duration = 120)]
-        [HttpGet]
-        [Route("users")]
-        public async Task<IActionResult> GetAll()
-        {
-            var users = await _adminService.GetAllUserAsync();
-            return Ok(users);
-        }
+        //[ResponseCache(Duration = 120)]
+        //[HttpGet]
+        //[Route("users")]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    _logger.LogInformation("Get All users in the API");
+        //    var users = await _adminService.GetAllUserAsync();
+        //    return Ok(users);
+        //}
 
+
+
+        //[HttpGet]
+        //[Route("userspage")]
+        //public async Task<IActionResult> GetAllUserPage(int pageNumber = 1, int pageSize = 10)
+        //{
+        //    if(pageSize > maxUserPageSize)
+        //    {
+        //        pageSize = maxUserPageSize;
+        //    }
+        //    var users = await _adminService.GetAllPagination(pageNumber , pageSize);
+
+
+        //    return Ok(users);
+        //}
 
         //[HttpGet("{userId}", Name = "GetById")]
         //public async Task<IActionResult> GetById(string userId)

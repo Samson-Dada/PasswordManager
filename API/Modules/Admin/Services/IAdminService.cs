@@ -5,9 +5,11 @@ namespace API.Modules.Services
 {
     public interface IAdminService
     {
-        Task<SharedUser.User> GetUserByIdAsync(string id);
-        Task<IEnumerable<SharedUser.User>> GetAllUserAsync();
-        //Task<bool> UserAlreadyExist(string userName);
-        Task< SharedUser.User> GetUserByUserNameAsync(string userName);
+        //Task<SharedUser.User> GetUserByIdAsync(string id);
+        //Task<IEnumerable<SharedUser.User>> GetAllUserAsync();
+        ////Task<bool> UserAlreadyExist(string userName);
+        //Task< SharedUser.User> GetUserByUserNameAsync(string userName);
+        //Task<IEnumerable<SharedUser.User>> GetAllPagination(int pageNumber, int pageSize);
+
     }
 }

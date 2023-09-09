@@ -7,14 +7,20 @@ namespace API.Shared.Models.UserDto
 
         [MinLength(3, ErrorMessage = "Username is to short")]
         [Required(ErrorMessage = "Please Enter Username")]
-        public string Username { get; set; }
+        public string UserName { get; set; }
 
-        [MinLength(8, ErrorMessage = "Password is to short")]
+        [MinLength(5, ErrorMessage = "Password is to short")]
         [Required(ErrorMessage = "Please Enter Password")]
         public string UserPassword { get; set; }
 
-        [MinLength(8, ErrorMessage = "Email is to short")]
+        [Required(ErrorMessage = "Name is required")]
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
+
+        [MinLength(5, ErrorMessage = "Email is to short")]
         [Required(ErrorMessage = "Invalid Email Address")]
+        [EmailAddress]
         public string Email { get; set; }
     }
 }

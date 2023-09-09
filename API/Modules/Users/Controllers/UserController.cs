@@ -4,11 +4,13 @@ using API.Shared.Models.PasswordDto;
 using API.Shared.Models.UserDto;
 using API.Shared.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Modules.User
 {
+    [Authorize(Roles = "User")]
     [Route("api/users")]
     [ApiController]
     public class UserController : ControllerBase
@@ -16,118 +18,172 @@ namespace API.Modules.User
         private readonly IUserService _userService;
         private readonly IPasswordService _passwordService;
         private readonly IMapper _mapper;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService, IPasswordService passwordService, IMapper mapper)
+
+
+        public UserController(IUserService userService, IPasswordService passwordService, IMapper mapper, ILogger<UserController> logger)
         {
             _userService = userService;
             _passwordService = passwordService;
             _mapper = mapper;
+            _logger = logger;
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var userList = await Task.FromResult(new string[]
+            {
+                "John", "Ben", "Ayo", "Bola"
+            });
+            return Ok(userList);
+        }
+
+
+
+
+        //Save or keep password
+       //[HttpPost("passwords")]
+       // public async Task<IActionResult> AddPassword(string username, [FromForm] PasswordCreationDto passwordCreationDto)
+       // {
+       //     try
+       //     {
+       //         var user = await _userService.GetUserByUserNameAsync(username);
+       //         if (user is null)
+       //         {
+       //             return NotFound($"Cannot find user ID");
+       //         }
+
+       //         var hashedPassword = _passwordService.HashedPassword(passwordCreationDto.HashedPassword);
+       //         var passwordEntity = _mapper.Map<Password>(passwordCreationDto);
+       //         passwordEntity.HashedPassword = hashedPassword;
+       //         passwordEntity.Id = Guid.NewGuid().ToString();
+       //         string formattedDate = DateFormatter.DateFormat();
+       //         passwordEntity.Date = formattedDate;
+
+       //         user.Password.Add(passwordEntity);
+       //         await _userService.UpdateUserAsync(user);
+       //         //await _emailService.SendMail(MailRequest);
+       //         var userPasswordDto = _mapper.Map<UserPasswordCreationDto>(user);
+       //         return CreatedAtRoute(nameof(GetUserById), new { userId = user.Id }, userPasswordDto);
+       //     }
+       //     catch (Exception ex)
+       //     {
+       //         _logger.LogError("Exception error in password creations", username);
+       //         return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+       //     }
+       // }
+
 
 
         // Get user by id
-        [HttpGet("{userId}", Name = "GetUserById")]
-        public async Task<IActionResult> GetUserById(string userId)
-        {
-            try
-            {
+        //[HttpGet("{userId}", Name = "GetUserById")]
+        //public async Task<IActionResult> GetUserById(string userId)
+        //{
 
-                var user = await _userService.GetUserByIdAsync(userId);
+        //    try
+        //    {
 
-                if (user is null)
-                {
-                    return NotFound($"{StatusCodes.Status404NotFound} : Cannot find user ID {userId}");
-                }
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //        var user = await _userService.GetUserByIdAsync(userId);
 
-            }
-        }
+        //        if (user is null)
+        //        {
+        //            return NotFound($"{StatusCodes.Status404NotFound} : Cannot find user ID {userId}");
+        //        }
+        //        return Ok(user);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //    _logger.LogError("Error in the endpoint of {userId}",userId);
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+        //    }
+        //}
 
 
         //check result and implemtation purpose
-        [HttpPut("{userId}")]
-        public async Task<IActionResult> Update(string userId, [FromBody] Shared.Entities.User user)
-        {
-            try
-            {
+        //[HttpPut("{userId}")]
+        //public async Task<IActionResult> Update(string userId, [FromBody] Shared.Entities.User user)
+        //{
+        //    try
+        //    {
 
-                if (user is null || userId == null || user.Id != userId)
-                {
-                    return NotFound($" Cannot found user {user.Id}");
-                }
+        //        if (user is null || userId == null || user.Id != userId)
+        //        {
+        //            return NotFound($" Cannot found user {user.Id}");
+        //        }
 
-                if (user is null || user.Id != user.Id)
-                {
-                    return NotFound($" Cannot found user {user.Id}");
-                }
-                if (await _userService.UserAlreadyExist(user.Username))
-                {
-                    return BadRequest($"Username \"{user.Username}\"  has already been used. Please update to another one.");
-                }
-                await _userService.UpdateUserAsync(user);
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //        if (user is null || user.Id != user.Id)
+        //        {
+        //            return NotFound($" Cannot found user {user.Id}");
+        //        }
+        //        if (await _userService.UserAlreadyExist(user.UserName))
+        //        {
+        //            return BadRequest($"Username \"{user.UserName}\"  has already been used. Please update to another one.");
+        //        }
+        //        await _userService.UpdateUserAsync(user);
+        //        return Ok(user);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
 
-            }
-        }
+        //    }
+        //}
 
 
         // Save or keep password
-        [HttpPost("passwords")]
-        public async Task<IActionResult> AddPassword(string username, [FromForm] PasswordCreationDto passwordCreationDto)
-        {
-            try
-            {
-                var user = await _userService.GetUserByUserNameAsync(username);
-                if (user is null)
-                {
-                    return NotFound($"Cannot find user ID");
-                }
+        //[HttpPost("passwords")]
+        //public async Task<IActionResult> AddPassword(string username, [FromForm] PasswordCreationDto passwordCreationDto)
+        //{
+        //    try
+        //    {
+        //        var user = await _userService.GetUserByUserNameAsync(username);
+        //        if (user is null)
+        //        {
+        //            return NotFound($"Cannot find user ID");
+        //        }
 
-                var hashedPassword = _passwordService.HashedPassword(passwordCreationDto.HashedPassword);
-                var passwordEntity = _mapper.Map<Password>(passwordCreationDto);
-                passwordEntity.HashedPassword = hashedPassword;
-                passwordEntity.Id = Guid.NewGuid().ToString();
-                string formattedDate = DateFormatter.DateFormat();
-                passwordEntity.Date = formattedDate;
+        //        var hashedPassword = _passwordService.HashedPassword(passwordCreationDto.HashedPassword);
+        //        var passwordEntity = _mapper.Map<Password>(passwordCreationDto);
+        //        passwordEntity.HashedPassword = hashedPassword;
+        //        passwordEntity.Id = Guid.NewGuid().ToString();
+        //        string formattedDate = DateFormatter.DateFormat();
+        //        passwordEntity.Date = formattedDate;
 
-                user.Password.Add(passwordEntity);
-                await _userService.UpdateUserAsync(user);
-                //await _emailService.SendMail(MailRequest);
-                var userPasswordDto = _mapper.Map<UserPasswordCreationDto>(user);
-                return CreatedAtRoute(nameof(GetUserById), new { userId = user.Id }, userPasswordDto);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
+        //        user.Password.Add(passwordEntity);
+        //        await _userService.UpdateUserAsync(user);
+        //        //await _emailService.SendMail(MailRequest);
+        //        var userPasswordDto = _mapper.Map<UserPasswordCreationDto>(user);
+        //        return CreatedAtRoute(nameof(GetUserById), new { userId = user.Id }, userPasswordDto);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError("Exception error in password creations", username);
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //    }
+        //}
 
 
         // change to use Dto
         // for update username
-        [HttpPut("{userId}/username")]
-        public async Task<IActionResult> UpdateUserName(string userId, [FromBody] UserForUpdateUserNameDto userForUpdateUserNameDto)
-        {
-            if (userId == null || userForUpdateUserNameDto.Username == null)
-            {
-                return NotFound();
-            }
+        //[HttpPut("{userId}/username")]
+        //public async Task<IActionResult> UpdateUserName(string userId, [FromBody] UserForUpdateUserNameDto userForUpdateUserNameDto)
+        //{
+        //    if (userId == null || userForUpdateUserNameDto.Username == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (await _userService.UserAlreadyExist(userForUpdateUserNameDto.Username))
-            {
-                return BadRequest($"Username \"{userForUpdateUserNameDto.Username}\"  has already been used. Please update to another one.");
-            }
-            await _userService.UpdateUserNameAsync(userId, userForUpdateUserNameDto.Username);
-            return Ok(userForUpdateUserNameDto.Username);
-        }
+        //    if (await _userService.UserAlreadyExist(userForUpdateUserNameDto.Username))
+        //    {
+        //        return BadRequest($"Username \"{userForUpdateUserNameDto.Username}\"  has already been used. Please update to another one.");
+        //    }
+        //    await _userService.UpdateUserNameAsync(userId, userForUpdateUserNameDto.Username);
+        //    return Ok(userForUpdateUserNameDto.Username);
+        //}
 
         /****************/
 
@@ -151,35 +207,35 @@ namespace API.Modules.User
 
 
 
-        [HttpDelete("{userId}")]
-        public async Task<IActionResult> Delete(string userId)
-        {
-            try
-            {
-                var user = await _userService.GetUserByIdAsync(userId);
+        //[HttpDelete("{userId}")]
+        //public async Task<IActionResult> Delete(string userId)
+        //{
+        //    try
+        //    {
+        //        var user = await _userService.GetUserByIdAsync(userId);
 
-                if (user is null)
-                {
-                    return NotFound($"{StatusCodes.Status404NotFound} : Cannot find user ID {userId}");
-                }
-                await _userService.DeleteUserAsync(user);
-                return NoContent();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
+        //        if (user is null)
+        //        {
+        //            return NotFound($"{StatusCodes.Status404NotFound} : Cannot find user ID {userId}");
+        //        }
+        //        await _userService.DeleteUserAsync(user);
+        //        return NoContent();
+        //    }
+        //    catch (DbUpdateConcurrencyException ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //    }
+        //}
 
         /* Action for password*/
 
-        [HttpGet]
-        [Route("passwords")]
-        public async Task<IActionResult> GetAll()
-        {
-            var password = await _passwordService.GetAllPassowordAsync();
-            return Ok(password);
-        }
+        //[HttpGet]
+        //[Route("passwords")]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    var password = await _passwordService.GetAllPassowordAsync();
+        //    return Ok(password);
+        //}
     }
 }
 
