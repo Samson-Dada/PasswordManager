@@ -1,7 +1,7 @@
 ﻿using API.Modules.User.Services;
-using API.Shared.Models;
+using API.Shared.Authentications.Services;
 using API.Shared.Models.UserDto;
-using API.Shared.Services;
+using API.Shared.Role;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Modules.Users.Controllers
@@ -22,7 +22,7 @@ namespace API.Modules.Users.Controllers
 
         }
 
-
+        // Registration
         [HttpPost]
         [Route("registeration")]
         public async Task<IActionResult> Register(UserForSignupDto model)
@@ -31,7 +31,7 @@ namespace API.Modules.Users.Controllers
             {
                 if (!ModelState.IsValid)
                     return BadRequest("Invalid payload");
-                var (status, message) = await _authService.Registration(model, Roles.User);
+                var (status, message) = await _authService.Registration(model, RoleList.User);
                 if (status == 0)
                 {
                     return BadRequest(message);
@@ -45,7 +45,6 @@ namespace API.Modules.Users.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
 
         //Login
         [HttpPost]
@@ -70,6 +69,14 @@ namespace API.Modules.Users.Controllers
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
             }
+        }
+
+        [HttpPost]
+        [Route("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _authService.Logout();
+            return RedirectToAction("Login");
         }
 
     }

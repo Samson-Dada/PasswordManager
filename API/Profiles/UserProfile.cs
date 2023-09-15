@@ -9,8 +9,8 @@ namespace API.Profiles
         public UserProfile()
         {
             // Get Mapping
-            //CreateMap<User, UserForGetDto>()
-            //    .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password));
+            CreateMap<User, UserForGetDto>();
+              //.ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password));
 
             //CreateMap<UserForGetDto, User>()
             // .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password));

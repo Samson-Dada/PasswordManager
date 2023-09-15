@@ -1,10 +1,10 @@
-﻿using System.Text.Json.Serialization;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Text.Json.Serialization;
 
 namespace API.Shared.Entities
 {
-    public class Password
+    public class Password 
     {
-        //public int Id { get; set; }
         public string Id { get; set; }
         public string Title { get; set; }
         public string HashedPassword { get; set; }
@@ -15,5 +15,3 @@ namespace API.Shared.Entities
     }
 
 }
-
-// implement a method to make the date be updated when user update password

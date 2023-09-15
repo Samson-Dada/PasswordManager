@@ -6,12 +6,13 @@ namespace API.Modules.User.Services
     {
 
         /* NEW METHOD FUNCTIONALITY*/
-        //Task<IdentityResult> CreateUserAsyncs(SharedUser.User user, string password);
-        Task<IdentityResult> GetUserByIdAsyncs(string id);
-        Task<IdentityResult> DeleteUserAsyncs(SharedUser.User user);
+        Task<IdentityUser> GetUserByIdAsync(string id);
+        Task<IdentityResult> DeleteUserAsync(IdentityUser user);
         Task<IdentityResult> UpdateUserAsync(SharedUser.User user);
-        Task<bool> UserAlreadyExists(string userName);
-
+        Task<bool> IsUsernameAlreadyExists(string userName);
+        Task<SharedUser.User> GetUserByUserNameAsync(string userName);
+        Task<SharedUser.User> GetById(string id);
+        //Task DeleteUserAsyncs(IdentityResult user);
         /* OLD METHOD FUNCTIONALITY*/
 
 
@@ -25,7 +26,6 @@ namespace API.Modules.User.Services
         //Task<SharedUser.User> GetUserNameWithPasswordAsync(string userName);
         //Task GetUserNameWithAllPasswordAsync(SharedUser.User user);
 
-        //Task<IEnumerable<SharedUser.User>> GetAllUsersAsync();
 
     }
 }

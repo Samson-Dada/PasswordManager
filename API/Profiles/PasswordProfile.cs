@@ -10,10 +10,9 @@ namespace API.Profiles
         {
             CreateMap<PasswordCreationDto, Password>();
             CreateMap<Password, PasswordCreationDto>();
-            CreateMap<PasswordForGetDto, Password>();
-            CreateMap<Password, PasswordForGetDto>();
 
-            //
+            // For Get password
+            CreateMap<Password, PasswordForGetDto>();
 
 
         }

@@ -1,4 +1,5 @@
-﻿using API.Shared.Entities;
+﻿using API.Shared.Authentications;
+using API.Shared.Entities;
 using API.Shared.Models;
 using API.Shared.Models.UserDto;
 using Microsoft.AspNetCore.Identity;
@@ -7,17 +8,19 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace API.Shared.Services
+namespace API.Shared.Authentications.Services
 {
     public class AuthService : IAuthService
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
-        public AuthService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+        public AuthService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, SignInManager<User> signInManager, IConfiguration configuration)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            _signInManager = signInManager;
             _configuration = configuration;
 
         }
@@ -45,6 +48,12 @@ namespace API.Shared.Services
             return (1, token);
         }
 
+
+        public async Task Logout()
+        {
+            await _signInManager.SignOutAsync();
+
+        }
         public async Task<(int, string)> Registration(UserForSignupDto userForSignupDto, string role)
         {
 
@@ -83,7 +92,7 @@ namespace API.Shared.Services
             {
                 Issuer = _configuration["JWTKey:Issuer"],
                 Audience = _configuration["JWTKey:Audience"],
-                Expires = DateTime.UtcNow.AddMinutes(1),
+                Expires = DateTime.UtcNow.AddMinutes(tokenExpiryTimeout),
                 SigningCredentials = new SigningCredentials(authSignKey, SecurityAlgorithms.HmacSha256),
                 Subject = new ClaimsIdentity(claims)
             };
@@ -92,5 +101,7 @@ namespace API.Shared.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+
     }
 }

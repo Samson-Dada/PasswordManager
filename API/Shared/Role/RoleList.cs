@@ -1,6 +1,6 @@
-﻿namespace API.Shared.Models
+﻿namespace API.Shared.Role
 {
-    public static class Roles
+    public static class RoleList
     {
         public const string Admin = "Admin";
         public const string User = "User";

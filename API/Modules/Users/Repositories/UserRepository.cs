@@ -17,22 +17,11 @@ namespace API.Modules.User.Repositories
         }
 
 
-        public async  Task<IdentityResult> CreateUser(SharedUser.User user, string password)
-        {
-            IdentityResult newUser = await _userManager.CreateAsync(user, password);
-            return newUser;
-        }
 
-        public async Task<IdentityResult> GetUserById(string id)
+        public async Task<IdentityUser> GetUserById(string id)
         {
-            // Check if the user exists before attempting to delete
-            SharedUser.User existingUser = await _userManager.FindByIdAsync(id);
-            if (existingUser == null)
-            {
-                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
-            }
-            IdentityResult deleteUser = await _userManager.DeleteAsync(existingUser);
-            return deleteUser;
+            var existingUser = await _userManager.FindByIdAsync(id);
+            return existingUser;
         }
         private async Task<IdentityUser> UserExist(string id)
         {
@@ -57,11 +46,6 @@ namespace API.Modules.User.Repositories
             return await _userManager.UpdateAsync(existingUser);
         }
 
-        public async Task<bool> AlreadyExists(string userName)
-        {
-            IdentityUser userExist = await _userManager.FindByNameAsync(userName);
-            return userExist != null;
-        }
 
 
         // Delete a user
@@ -77,6 +61,85 @@ namespace API.Modules.User.Repositories
             IdentityResult deleteUser = await _userManager.DeleteAsync(existingUser);
             return deleteUser;
         }
+
+        /*...........*/
+
+        // Delete a user
+        public async Task<IdentityResult> DeleteUser(IdentityUser user)
+        {
+            // Check if the user exists before attempting to delete
+            SharedUser.User existingUser = await _userManager.FindByIdAsync(user.Id);
+            if (existingUser == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
+            }
+
+            IdentityResult deleteUser = await _userManager.DeleteAsync(existingUser);
+            return deleteUser;
+        }
+
+        // options 1
+        public async Task<IdentityResult> GetUserByUsername(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "Cannot found username, try another" });
+            }
+            return IdentityResult.Success;
+        }
+
+        // options 2
+        public async Task<bool> IsUserNameExist(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            return user != null;
+        }
+
+        // options 3
+        public async Task<bool> IsAlreadyExists(string userName)
+        {
+            IdentityUser userExist = await _userManager.FindByNameAsync(userName);
+            return userExist != null;
+        }
+
+
+        public async Task<SharedUser.User> GetById(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return null;
+            }
+            return user;
+        }
+
+
+        public async  Task<IdentityResult> CreateUser(SharedUser.User user, string password)
+        {
+            IdentityResult newUser = await _userManager.CreateAsync(user, password);
+            return newUser;
+        }
+
+
+
+
+        // public async Task<bool> IsUserNameExist(string username) =>  await _userManager.FindByNameAsync(username) != null;
+
+
+
+        public async Task<SharedUser.User> GetUserByName(string userName)
+        {
+
+            var user = await _userManager.FindByNameAsync(userName);
+            //var user = await _dbContext.Users.Include(userName).FirstOrDefaultAsync(u => u.Username == userName);
+            if (user is null)
+            {
+                return null;
+            }
+            return user;
+        }
+
 
         /* OLD METHOD FUNCTIONALITY*/
 

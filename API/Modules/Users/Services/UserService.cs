@@ -24,30 +24,56 @@ namespace API.Modules.User.Services
 
         //}
 
-        public async Task<IdentityResult> GetUserByIdAsyncs(string id)
+        public async Task<IdentityUser> GetUserByIdAsync(string id)
         {
-           IdentityResult user = await _userRepository.GetUserById(id);
+           IdentityUser user = await _userRepository.GetUserById(id);
             return user;
         }
 
-        public async Task<IdentityResult> DeleteUserAsyncs(SharedUser.User user)
+        //public async Task<IdentityResult> DeleteUserAsyncs(SharedUser.User user)
+        //{
+        //    IdentityResult userToDelete = await _userRepository.DeleteUser(user);
+        //    return userToDelete;
+        //}
+
+        public async Task<IdentityResult> DeleteUserAsync(IdentityUser user)
         {
             IdentityResult userToDelete = await _userRepository.DeleteUser(user);
             return userToDelete;
         }
 
+
+        //public async Task<IdentityResult> DeleteUserAsync(IdentityUser user)
+        //{
+        //    return await _userRepository.DeleteUserAsync(user);
+        //}
         public async Task<IdentityResult> UpdateUserAsync(SharedUser.User user)
         {
             IdentityResult userToUpdate = await _userRepository.UpdateUser(user);
             return userToUpdate;
         }
-        public async Task<bool> UserAlreadyExists(string userName)
+        public async Task<bool> IsUsernameAlreadyExists(string userName)
         {
-            bool userExist = await _userRepository.AlreadyExists(userName);
+            bool userExist = await _userRepository.IsAlreadyExists(userName);
             return userExist;
         }
 
 
+
+
+
+        public async Task<SharedUser.User> GetById(string id)
+        {
+            var user = await _userRepository.GetById(id);
+            return user;
+        }
+
+
+        public async Task<SharedUser.User> GetUserByUserNameAsync(string userName)
+        {
+            var user = await _userRepository.GetUserByName(userName);
+            return user;
+        }
 
 
         /* OLD METHOD FUNCTIONALITY*/

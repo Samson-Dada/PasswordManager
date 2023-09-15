@@ -9,11 +9,16 @@ namespace API.Modules.User.Repositories
         /* NEW METHOD FUNCTIONALITY*/
 
         Task<IdentityResult> CreateUser(SharedUser.User user, string password);
-        Task<IdentityResult> GetUserById(string id);
+        Task<IdentityUser> GetUserById(string id);
         Task<IdentityResult> DeleteUser(SharedUser.User user);
+        Task<IdentityResult> DeleteUser(IdentityUser user);
         Task<IdentityResult> UpdateUser(SharedUser.User user);
-        Task<bool> AlreadyExists(string userName);
+        Task<bool> IsAlreadyExists(string userName);
 
+       Task<IdentityResult> GetUserByUsername(string userName);
+        Task<bool> IsUserNameExist(string username);
+        Task<SharedUser.User> GetById(string id);
+        Task<SharedUser.User> GetUserByName(string userName);
         /* OLD METHOD FUNCTIONALITY*/
         //Task Create(SharedUser.User user);
         //Task Delete(SharedUser.User user);

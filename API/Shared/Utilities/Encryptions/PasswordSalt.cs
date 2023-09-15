@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace API.Shared.Utilities
+namespace API.Shared.Utilities.Encryptions
 {
     public class PasswordSalt
     {

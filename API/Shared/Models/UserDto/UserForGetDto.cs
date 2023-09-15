@@ -3,17 +3,14 @@ using API.Shared.Models.PasswordDto;
 
 namespace API.Shared.Models.UserDto
 {
-    public class UserForGetDto
+    public record UserForGetDto
     {
-        public UserForGetDto()
-        {
-            Password = new List<PasswordForGetDto>();
-        }
-
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public string Email { get; set; }
-        public string UserPassword { get; set; }
-        public ICollection<PasswordForGetDto> Password { get; set; }
+        public string Id { get; init; }
+        public string FirstName { get; init; }
+        public string LastName { get; init; }
+        public string Username { get; init; }
+        public string Email { get; init; }
+        public string UserPassword { get; init; }
+        public ICollection<PasswordForGetDto> Password { get; init; }
     }
 }

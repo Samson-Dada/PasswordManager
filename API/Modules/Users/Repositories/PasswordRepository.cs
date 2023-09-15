@@ -1,8 +1,7 @@
 ﻿using API.Shared.DataAccess;
 using API.Shared.Entities;
-using SharedUser = API.Shared.Entities;
-using API.Shared.Utilities;
 using Microsoft.EntityFrameworkCore;
+using API.Shared.Utilities.Encryptions;
 
 namespace API.Modules.User.Repositories
 {
@@ -13,85 +12,99 @@ namespace API.Modules.User.Repositories
         {
             _dbContext = dbContext;
         }
-        //public async Task<IEnumerable<Password>> GetAll()
-        //{
-        //    var passwords = await _dbContext.Passwords.ToListAsync();
-        //    return passwords;
-        //}
+        public async Task<IEnumerable<Password>> GetAllPassword()
+        {
+            var passwords = await _dbContext.Password.ToListAsync();
+            return passwords;
+        }
 
-        //public async Task GetById(string id)
-        //{
-        //    var password = await _dbContext.Passwords.SingleOrDefaultAsync(x => x.Id == id);
-        //    if (password is null)
-        //    {
-        //        return;
-        //    }
-        //}
+        //
+        public async Task<Password> DeletePassword(string passwordId)
+        {
+            var passwordToDelete = await _dbContext.Password.FirstOrDefaultAsync(x => x.Id == passwordId);
+            if (passwordToDelete is null)
+            {
+               return null;
+            }
+            _dbContext.Password.Remove(passwordToDelete);
+           await _dbContext.SaveChangesAsync();
+            return passwordToDelete;
+        }
 
-        //public async Task Create(SharedUser.User existingUser, Password password)
-        //{
-        //    string salt = BCrypt.Net.BCrypt.GenerateSalt();
-        //    BCrypt.Net.BCrypt.HashPassword(password.HashedPassword, salt);
-        //    var user = await _dbContext.AppUsers.SingleOrDefaultAsync(u => u.UserName == existingUser.UserName);
-        //    if (user is null)
-        //    {
-        //        return;
-        //    }
-        //    user = existingUser;
-        //    password.Id = Guid.NewGuid().ToString();
-        //    existingUser.Password.Add(password);
-        //    await _dbContext.SaveChangesAsync();
-        //}
 
-        //public async Task AddPassword(User existingUser, string title, string hashedPassword)
-        //{
-        //    var newPassword = new Password
-        //    {
-        //        Title = title,
-        //        HashedPassword = hashedPassword
-        //    };
+        public async Task<bool> DeletePasswordByUserId(string userId)
+        {
+            var userGuidAsString = userId.ToString();
+            var savePassword = await _dbContext.Password.FirstOrDefaultAsync(x => x.UserId == userGuidAsString);
 
-        //    existingUser.Password.Add(newPassword);
-        //    await _dbContext.SaveChangesAsync();
-        //}
+            if (savePassword is null)
+            {
+                return false; 
+            }
+
+            _dbContext.Password.Remove(savePassword);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
 
 
 
-        // Continue from here
-        //public async Task<IEnumerable<Password>> SearchPassword(string passwordTitle)
-        //{
-        //    if (string.IsNullOrEmpty(passwordTitle) && string.IsNullOrWhiteSpace(passwordTitle))
-        //    {
-        //        return await GetAll();
-        //    }
-        //    var collection = _dbContext.Passwords as IQueryable<Password>;
 
-        //    if (!string.IsNullOrWhiteSpace(passwordTitle))
-        //    {
-        //        passwordTitle = passwordTitle.Trim();
-        //        collection = collection.Where(t => t.Title.Contains(passwordTitle));
-        //    }
+        // Get password by ID
+        public async Task<Password> GetById(string passwordId)
+        {
+            var password = await _dbContext.Password.SingleOrDefaultAsync(x => x.Id == passwordId);
+            if (password is null)
+            {
+                return null;
+            }
+            return password;
+        }
 
-        //    Task<List<Password>> task = collection.OrderBy(x => x.Title).ToListAsync();
-        //    return await task;
-        //}
+        // Search for password by title
+        public async Task<IEnumerable<Password>> GetPasswordBySearch(string passwordTitle)
+        {
+            if (string.IsNullOrEmpty(passwordTitle) && string.IsNullOrWhiteSpace(passwordTitle))
+            {
+                return await GetAllPassword();
+            }
+            var collection = _dbContext.Password as IQueryable<Password>;
+            passwordTitle = passwordTitle.Trim();
+            var result = await collection
+             .Where(t => t.Title.Contains(passwordTitle))
+             .OrderBy(t => t.Title)
+             .ToListAsync();
 
-        //public string HashPassword(string password)
-        //{
+            return result.Any() ? result : await GetAllPassword();
+        }
 
-        //    return PasswordHash.GenerateHashPassword(password);
-        //    //    using SHA256 sha256 = SHA256.Create();
-        //    //    byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
-        //    //    byte[] hashedBytes = sha256.ComputeHash(passwordBytes);
 
-        //    //    string hashedPassword = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
-        //    //    return hashedPassword;
-        //}
+        // Filter for password by title
+        public async Task<IEnumerable<Password>> GetPasswordByFilter(string passwordTitle)
+        {
+
+            if (string.IsNullOrWhiteSpace(passwordTitle))
+            {
+                return await GetAllPassword();
+            }
+
+            passwordTitle = passwordTitle.Trim();
+            var result = await _dbContext.Password
+                 .Where(title => title.Title == passwordTitle)
+                 .OrderBy(title => title.Title)
+                 .ToListAsync();
+            return result.Any() ? result : await GetAllPassword();
+        }
+
+        // Password hashing
+        public string HashPassword(string password)
+        {
+            string passwordToHash = PasswordHash.GenerateHashPassword(password);
+            return passwordToHash;
+        }
+
+
+
     }
 }
-
-
-
-
-///  a method that create passoword when existing
-///  user is provided, without creating another one/

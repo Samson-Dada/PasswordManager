@@ -1,6 +1,9 @@
-﻿using API.Shared.Services;
+﻿using API.Shared.Models.UserDto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using API.Shared.Models.AdminDto;
+using API.Shared.Role;
+using API.Shared.Authentications.Services;
 
 namespace API.Modules.Admin.Controllers
 {
@@ -15,6 +18,32 @@ namespace API.Modules.Admin.Controllers
             _authService = authService;
             _logger = logger;
         }
+
+
+
+        // Registration
+        //[HttpPost]
+        //[Route("registeration")]
+        //public async Task<IActionResult> Register(AdminForSignupDto model)
+        //{
+        //    try
+        //    {
+        //        if (!ModelState.IsValid)
+        //            return BadRequest("Invalid payload");
+        //        var (status, message) = await _authService.Registration(model, RoleList.Admin);
+        //        if (status == 0)
+        //        {
+        //            return BadRequest(message);
+        //        }
+        //        return CreatedAtAction(nameof(Register), model);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex.Message);
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //    }
+        //}
 
 
         //[HttpPost]

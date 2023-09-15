@@ -52,39 +52,6 @@ public class RegisterController : ControllerBase
     //}
 
 
-
-
-
-
-
-    //[HttpGet("{id}", Name = "GetRegisterById")]
-    //public async Task<IActionResult> GetById(string userId)
-    //{
-    //    try
-    //    {
-
-    //        var user = await _userService.GetUserByIdAsync(userId);
-
-    //        if (user is null)
-    //        {
-    //            return NotFound($"{StatusCodes.Status404NotFound} : Cannot find user ID {userId}");
-    //        }
-    //        return Ok(user);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-
-    //    }
-    //}
-
-
-
-
-
-
-
-
     //[HttpPost]
     //[Route("adds")]
     //public async Task<IActionResult> CreateUser([FromForm] UserForSignupDto userForSignupDto)

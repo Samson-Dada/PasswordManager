@@ -14,6 +14,6 @@ namespace API.Shared.DataAccess
 
 
         //public DbSet<User> AUsers { get; set; }
-        //public DbSet<Password> Passwords { get; set; }
+        public DbSet<Password> Password { get; set; }
     }
 }

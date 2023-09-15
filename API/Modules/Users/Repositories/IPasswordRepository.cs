@@ -6,12 +6,15 @@ namespace API.Modules.User.Repositories
 {
     public interface IPasswordRepository
     {
-        //    Task<IEnumerable<Password>> GetAll();
-        //Task<IEnumerable<Password>> GetAll();
-        //Task GetById(string id);
-        //Task Create(SharedUser.User existingUser, Password password);
+
+        string HashPassword(string password);
+        Task<IEnumerable<Password>> GetAllPassword();
+        Task<Password> GetById(string id);
+        Task<IEnumerable<Password>> GetPasswordBySearch(string passwordTitle);
+        Task<Password> DeletePassword(string passwordId);
+        Task<bool> DeletePasswordByUserId(string userId);
+        Task<IEnumerable<Password>> GetPasswordByFilter(string passwordTitle);
         ////    Task Update(Password password);
-        //string HashPassword(string password);
 
     }
 }

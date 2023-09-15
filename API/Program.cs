@@ -11,7 +11,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using API.Shared.Services;
+using API.Shared.Authentications.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

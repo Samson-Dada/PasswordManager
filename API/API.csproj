@@ -27,7 +27,6 @@
 
 
 	<ItemGroup>
-	  <Folder Include="Shared\Utilities\Encryptions\" />
 	  <Folder Include="Shared\Utilities\Configurations\" />
 	  <Folder Include="Shared\Utilities\Extensions\" />
 	</ItemGroup>
