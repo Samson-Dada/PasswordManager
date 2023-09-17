@@ -15,7 +15,7 @@ namespace API.Modules.Users.Controllers
     {
         private readonly IPasswordService _passwordService;
         private readonly IUserService _userService;
-        private ILogger<PasswordController> _logger;
+        private readonly ILogger<PasswordController> _logger;
         private readonly IMapper _mapper;
 
         public PasswordController(
@@ -49,7 +49,7 @@ namespace API.Modules.Users.Controllers
         }
 
         // Endpoint to save, store or keep password
-        [HttpPost("passwords")]
+        [HttpPost("adds")]
         public async Task<IActionResult> AddPassword(string username, [FromForm] PasswordCreationDto passwordCreationDto)
         {
             try
@@ -77,7 +77,6 @@ namespace API.Modules.Users.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
 
 
         // Endpoint to get all password
@@ -130,30 +129,5 @@ namespace API.Modules.Users.Controllers
             var mappedPasswords = _mapper.Map<IEnumerable<PasswordForGetDto>>(filterResult);
             return Ok(mappedPasswords);
         }
-
-        //// Endpoint to delete saved or password by user Id
-        //[HttpDelete("{userId}")]
-        //public async Task<IActionResult> DeletePasswordByUserId(string userId)
-        //{
-        //    try
-        //    {
-        //        if(!Guid.TryParse(userId, out var id))
-        //        {
-        //            return BadRequest("Invalid userId format");
-        //        }
-        //        var isDeleted = await _passwordService.DeletePasswordByUserIdAsync(userId);
-        //        if (!isDeleted)
-        //        {
-        //            return NotFound("Password with the provided ID doesn't exist");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-
-        //    }
-        //    return NoContent();
-        //}
-
     }
 }

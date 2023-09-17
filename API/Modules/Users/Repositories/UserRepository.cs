@@ -1,10 +1,5 @@
-﻿using API.Shared.DataAccess;
-using SharedUser =  API.Shared.Entities;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using SharedUser =  API.Shared.Entities;
 using Microsoft.AspNetCore.Identity;
-using System.Runtime.CompilerServices;
-using API.Shared.Entities;
 
 namespace API.Modules.User.Repositories
 {
@@ -15,7 +10,6 @@ namespace API.Modules.User.Repositories
         {
             _userManager = userManager;
         }
-
 
 
         public async Task<IdentityUser> GetUserById(string id)
@@ -115,19 +109,14 @@ namespace API.Modules.User.Repositories
         }
 
 
+        //
         public async  Task<IdentityResult> CreateUser(SharedUser.User user, string password)
         {
             IdentityResult newUser = await _userManager.CreateAsync(user, password);
             return newUser;
         }
 
-
-
-
-        // public async Task<bool> IsUserNameExist(string username) =>  await _userManager.FindByNameAsync(username) != null;
-
-
-
+        //
         public async Task<SharedUser.User> GetUserByName(string userName)
         {
 
@@ -140,48 +129,10 @@ namespace API.Modules.User.Repositories
             return user;
         }
 
+        // TODO :: Use Microsoft Identity for updating user
+               // check the below method
 
         /* OLD METHOD FUNCTIONALITY*/
-
-        //public async Task<IEnumerable<SharedUser.User>> GetAll()
-        //{
-        //    var users = await _dbContext.AppUsers.Include(u => u.Password).ToListAsync();
-        //    if (users is null)
-        //    {
-        //        return null;
-        //    }
-        //    return users;
-        //}
-
-        //public async Task Create(SharedUser.User user)
-        //{
-        //    //string salt = BCrypt.Net.BCrypt.GenerateSalt();
-        //    //user.Password = BCrypt.Net.BCrypt.HashPassword(user., salt);
-
-        //    await _dbContext.AppUsers.AddAsync(user);
-        //    await _dbContext.SaveChangesAsync();
-        //    await _dbContext.AppUsers.Include(u => u.Password).ToListAsync();
-        //}
-
-        //public async Task Delete(SharedUser.User user)
-        //{
-        //    _dbContext.AppUsers.Remove(user);
-        //    await _dbContext.SaveChangesAsync();
-        //    await Task.CompletedTask;
-        //}
-
-
-
-
-        //public async Task<SharedUser.User> GetById(string id)
-        //{
-        //    var userId = await _dbContext.AppUsers.Include(u => u.Password).SingleOrDefaultAsync(u => u.Id == id);
-        //    if (userId is null)
-        //    {
-        //        return null;
-        //    }
-        //    return userId;
-        //}
 
         //public async Task Update(SharedUser.User user)
         //{
@@ -220,49 +171,5 @@ namespace API.Modules.User.Repositories
         //    existingUser.UserName = newUsername;
         //    await _dbContext.SaveChangesAsync();
         //}
-
-
-        //public async Task<bool> AlreadyExist(string userName)
-        //{
-        //    bool isExist = await _dbContext.AppUsers.Include(u => u.Password).AnyAsync(u => u.UserName == userName);
-        //    return isExist;
-        //}
-
-        //public async Task<SharedUser.User> GetUserByName(string userName)
-        //{
-
-        //    var user = await _dbContext.AppUsers.SingleOrDefaultAsync(u => u.UserName == userName);
-        //    //var user = await _dbContext.Users.Include(userName).FirstOrDefaultAsync(u => u.Username == userName);
-        //    if (user is null)
-        //    {
-        //        return null;
-        //    }
-        //    return user;
-        //}
-
-
-        //public async Task<SharedUser.User> GetUserByNameWithPassword(string username)
-        //{
-        //    await GetUserByName(username);
-        //    var user = await _dbContext.AppUsers
-        //        .Include(u => u.Password)
-        //        .Where(u => u.UserName == username)
-        //        .FirstOrDefaultAsync();
-
-        //    return user;
-        //}
-
-        //public async Task GetAllPassword(SharedUser.User user)
-        //{
-        //    await _dbContext.AppUsers.Include(p => p.Password).ToListAsync();
-        //}
-
-        // TODO::  Remove later
-
-        //public async Task<IEnumerable<SharedUser.User>> GetAllUsers()
-        // {
-        //     var users = await _dbContext.AppUsers.ToListAsync();
-        //     return users;
-        // }
     }
 }

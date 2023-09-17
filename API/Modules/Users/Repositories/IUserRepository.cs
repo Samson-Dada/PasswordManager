@@ -15,21 +15,15 @@ namespace API.Modules.User.Repositories
         Task<IdentityResult> UpdateUser(SharedUser.User user);
         Task<bool> IsAlreadyExists(string userName);
 
-       Task<IdentityResult> GetUserByUsername(string userName);
+        Task<IdentityResult> GetUserByUsername(string userName);
         Task<bool> IsUserNameExist(string username);
         Task<SharedUser.User> GetById(string id);
         Task<SharedUser.User> GetUserByName(string userName);
-        /* OLD METHOD FUNCTIONALITY*/
-        //Task Create(SharedUser.User user);
-        //Task Delete(SharedUser.User user);
-        //Task<SharedUser.User> GetById(string id);
-        //Task Update(SharedUser.User user);
-        //Task<bool> AlreadyExist(string userName);
-        //Task UpdateUser(string userId, string newUsername);
-        //Task<SharedUser.User> GetUserByName(string userName);
-        //Task<SharedUser.User> GetUserByNameWithPassword(string username);
-        //Task GetAllPassword(SharedUser.User user);
 
-        //Task<IEnumerable<SharedUser.User>> GetAllUsers();
+
+        // TODO:: Change some old method to use microsoft Idenity instead of dbContext
+        /* OLD METHOD FUNCTIONALITY*/
+        //Task Update(SharedUser.User user);
+        //Task UpdateUser(string userId, string newUsername);
     }
 }

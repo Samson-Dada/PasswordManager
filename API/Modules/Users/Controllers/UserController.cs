@@ -1,11 +1,6 @@
 ﻿using API.Modules.User.Services;
-using API.Shared.Entities;
-using API.Shared.Models.PasswordDto;
 using API.Shared.Models.UserDto;
-using API.Shared.Utilities;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,22 +12,12 @@ namespace API.Modules.User
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IPasswordService _passwordService;
         private readonly IMapper _mapper;
         private readonly ILogger<UserController> _logger;
 
-
-
-        public UserController
-            (
-            IUserService userService,
-            IPasswordService passwordService, 
-            IMapper mapper, 
-            ILogger<UserController> logger
-            )
+        public UserController(IUserService userService,IMapper mapper,ILogger<UserController> logger)
         {
             _userService = userService;
-            _passwordService = passwordService;
             _mapper = mapper;
             _logger = logger;
         }
@@ -77,16 +62,15 @@ namespace API.Modules.User
                 {
                     return NotFound($"{StatusCodes.Status404NotFound} : Cannot find user ID {userId}");
                 }
-                await _userService.DeleteUserAsync(user);
+               await _userService.DeleteUserAsync(user);
                 return NoContent();
             }
             catch (DbUpdateConcurrencyException ex)
             {
+                _logger.LogError("IdentityResult:: Cannot delete the user {user}",userId);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
-        /*************/
 
         // change to use Dto
         // for update username

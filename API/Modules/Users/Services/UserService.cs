@@ -14,16 +14,6 @@ namespace API.Modules.User.Services
             _userRepository = userRepository;
         }
 
-
-        /* NEW METHOD FUNCTIONALITY*/
-
-        //public async Task<IdentityResult> CreateUserAsyncs(SharedUser.User user, string password)
-        //{
-        //    IdentityResult newUser = await _userRepository.CreateUser(user, password);
-        //    return newUser;
-
-        //}
-
         public async Task<IdentityUser> GetUserByIdAsync(string id)
         {
            IdentityUser user = await _userRepository.GetUserById(id);
@@ -42,11 +32,6 @@ namespace API.Modules.User.Services
             return userToDelete;
         }
 
-
-        //public async Task<IdentityResult> DeleteUserAsync(IdentityUser user)
-        //{
-        //    return await _userRepository.DeleteUserAsync(user);
-        //}
         public async Task<IdentityResult> UpdateUserAsync(SharedUser.User user)
         {
             IdentityResult userToUpdate = await _userRepository.UpdateUser(user);
@@ -77,31 +62,10 @@ namespace API.Modules.User.Services
 
 
         /* OLD METHOD FUNCTIONALITY*/
-        //public async Task CreateUserAsync(SharedUser.User user)
-        //{
-        //    await _userRepository.Create(user);
-        //}
-
-
-
-        //public async Task<SharedUser.User> GetUserByIdAsync(string id)
-        //{
-        //    var user = await _userRepository.GetById(id);
-        //    if (user is null)
-        //    {
-        //        return null;
-        //    }
-        //    return user;
-        //}
 
         //public Task UpdateUserAsync(SharedUser.User user)
         //{
         //    return _userRepository.Update(user);
-        //}
-
-        //public Task DeleteUserAsync(SharedUser.User user)
-        //{
-        //    return _userRepository.Delete(user);
         //}
 
         //public async Task UpdateUserNameAsync(string userId, string userName)
@@ -111,12 +75,6 @@ namespace API.Modules.User.Services
 
 
 
-
-        //public async Task<bool> UserAlreadyExist(string userName)
-        //{
-        //    bool isExist = await _userRepository.AlreadyExist(userName);
-        //    return isExist;
-        //}
 
         //public async Task<SharedUser.User> GetUserByUserNameAsync(string userName)
         //{
@@ -128,18 +86,6 @@ namespace API.Modules.User.Services
         //{
         //    var user = await _userRepository.GetUserByNameWithPassword(userName);
         //    return user;
-        //}
-
-        //public async Task GetUserNameWithAllPasswordAsync(SharedUser.User user)
-        //{
-        //    await _userRepository.GetAllPassword(user);
-        //}
-
-        //TODO:: Remove later
-
-        //public async Task<IEnumerable<SharedUser.User>> GetAllUsersAsync()
-        //{
-        //    return await _userRepository.GetAllUsers();
         //}
     }
 }

@@ -17,7 +17,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.ReturnHttpNotAcceptable = true;  
+}).AddXmlDataContractSerializerFormatters();
 builder.Services.AddDbContext<ApplicationDbContext>(actionOptions =>
 {
     actionOptions.UseSqlServer(builder.Configuration.GetConnectionString("PasswordVaultConnection"));
@@ -29,6 +32,7 @@ builder.Services.AddSwaggerGen();
 //For Identity
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+//builder.Services.AddTransient<IAdminAuthService, AdminAuthService>();
 
 //
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -43,6 +47,10 @@ builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 //
+
+//builder.Services.AddIdentity<Admin, IdentityRole>()
+//                 .AddEntityFrameworkStores<ApplicationDbContext>()
+//                 .AddDefaultTokenProviders();
 
 // Adding Authentication
 builder.Services.AddAuthentication(actionOption =>

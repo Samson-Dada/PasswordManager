@@ -9,10 +9,10 @@ namespace API.Shared.Authentications
     {
         private readonly IConfiguration _configuration;
 
-        //public TokenGenerator(IConfiguration configuration)
-        //{
-        //    _configuration = configuration;
-        //}
+        public TokenGenerator(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         public  string GenerateToken(List<Claim> claims)
         {
             var key = Encoding.UTF8.GetBytes(_configuration["JWTKey:SecretKey"]);

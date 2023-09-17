@@ -1,69 +1,53 @@
 ﻿using API.Shared.DataAccess;
 using SharedUser = API.Shared.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Modules.Repositories
 {
     public class AdminRepository: IAdminRepository
     {
-        //private readonly ApplicationDbContext _dbContext;
-        //public AdminRepository(ApplicationDbContext dbContext )
+        private readonly ApplicationDbContext _dbContext;
+        private readonly UserManager<SharedUser.User> _userManager;
+        //public AdminRepository(UserManager<SharedUser.User> userManager, ApplicationDbContext dbContext)
         //{
+        //    _userManager = userManager;
         //    _dbContext = dbContext;
         //}
 
-        //public async Task<IEnumerable<SharedUser.User>> GetAll()
-        //{
-        //    var users = await _dbContext.AppUsers.Include(u => u.Password).ToListAsync();
-        //    if (users is null)
-        //    {
-        //        return null;
-        //    }
-        //    return users;
-        //}
-        //public async Task<SharedUser.User> GetById(string id)
-        //{
-        //    var userId = await _dbContext.AppUsers.Include(u => u.Password).SingleOrDefaultAsync(u => u.Id == id);
-        //    if (userId is null)
-        //    {
-        //        return null;
-        //    }
-        //    return userId;
-        //}
-
-        //public async Task<SharedUser.User> GetUserByName(string userName)
-        //{
-
-        //    var user = await _dbContext.AppUsers.SingleOrDefaultAsync(u => u.UserName == userName);
-        //    //var user = await _dbContext.Users.Include(userName).FirstOrDefaultAsync(u => u.Username == userName);
-        //    if (user is null)
-        //    {
-        //        return null;
-        //    }
-        //    return user;
-        //}
+        public AdminRepository(ApplicationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
 
 
-        //public async Task<SharedUser.User> GetUserByNameWithPassword(string username)
-        //{
-        //    await GetUserByName(username);
-        //    var user = await _dbContext.AppUsers
-        //        .Include(u=> u.Password)
-        //        .Where(u => u.UserName == username)
-        //        .FirstOrDefaultAsync();
+        // Get All users
+        public async Task<IEnumerable<SharedUser.User>> GetAll()
+        {
+            var users = await _dbContext.Users.ToListAsync();
+            return users;
+        }
 
-        //    return user;
-        //}
-        //public async Task<IEnumerable<SharedUser.User>> GetPagination(int pageNumber, int pageSize)
-        //{
-        //    var userCollection = _dbContext.AppUsers as IQueryable<SharedUser.User>;
-        //    var itemToSkip = pageSize * (pageNumber - 1);
-        //    var users = await _dbContext.AppUsers
-        //        .OrderBy(u => u.UserName)
-        //        .Skip(itemToSkip)
-        //        .Take(pageNumber)
-        //        .ToListAsync();
-        //    return users;
-        //}
+
+        // Get user by Id
+        public async Task<SharedUser.User> GetById(string id)
+        {
+            var userById = await _dbContext.Users.Include(u => u.Password).SingleOrDefaultAsync(u => u.Id == id);
+            return userById;
+        }
+
+
+        public async Task<IEnumerable<SharedUser.User>> GetUsersByPage(int pageNumber, int pageSize)
+        {
+
+            var collections = _dbContext.Users as IQueryable<SharedUser.User>;
+            var itemsToSkip = (pageNumber - 1) - pageSize;
+            var users = await collections
+                .Skip(itemsToSkip)
+                .Take(pageSize)
+                .OrderBy(u => u.UserName)
+                .ToListAsync();
+            return users;
+        }
     }
 }
