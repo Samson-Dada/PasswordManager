@@ -8,13 +8,6 @@ namespace API.Modules.Repositories
     public class AdminRepository: IAdminRepository
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly UserManager<SharedUser.User> _userManager;
-        //public AdminRepository(UserManager<SharedUser.User> userManager, ApplicationDbContext dbContext)
-        //{
-        //    _userManager = userManager;
-        //    _dbContext = dbContext;
-        //}
-
         public AdminRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;

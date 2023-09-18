@@ -72,6 +72,14 @@ namespace API.Modules.User.Repositories
             return deleteUser;
         }
 
+        public async Task<IdentityResult> UpdateUsername(IdentityUser user)
+        {
+            var existingUsername = await GetUserByName(user.UserName);
+            var updateUser = await _userManager.UpdateAsync(existingUsername);
+            return updateUser;
+        }
+
+
         // options 1
         public async Task<IdentityResult> GetUserByUsername(string userName)
         {
@@ -128,48 +136,5 @@ namespace API.Modules.User.Repositories
             }
             return user;
         }
-
-        // TODO :: Use Microsoft Identity for updating user
-               // check the below method
-
-        /* OLD METHOD FUNCTIONALITY*/
-
-        //public async Task Update(SharedUser.User user)
-        //{
-        //    var existingUser = await _dbContext.AppUsers.Include(u => u.Password).SingleOrDefaultAsync(u => u.Id == user.Id);
-
-        //    if (existingUser is null)
-        //    {
-        //        return;
-        //    }
-
-        //    existingUser.UserName = user.UserName;
-        //    existingUser.Email = user.Email;
-
-        //    var existingPassword = existingUser.Password.FirstOrDefault(p => p.Id == user.Password.FirstOrDefault()?.Id);
-        //    if (existingPassword != null)
-        //    {
-        //        existingPassword.Title = user.Password.FirstOrDefault()?.Title;
-        //        existingPassword.HashedPassword = user.Password.FirstOrDefault()?.HashedPassword;
-        //    }
-        //    else
-        //    {
-        //        return;
-        //    }
-        //    await _dbContext.SaveChangesAsync();
-        //}
-
-        //public async Task UpdateUser(string userId, string newUsername)
-        //{
-        //    var existingUser = await _dbContext.AppUsers.FindAsync(userId);
-
-        //    if (existingUser is null)
-        //    {
-        //        return;
-        //    }
-
-        //    existingUser.UserName = newUsername;
-        //    await _dbContext.SaveChangesAsync();
-        //}
     }
 }

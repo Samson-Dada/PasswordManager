@@ -22,7 +22,10 @@ namespace API.Modules.User
             _logger = logger;
         }
 
-
+        /// <summary>
+        /// Gets user list as a demo.
+        /// </summary>
+        /// <returns> </returns>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -34,8 +37,15 @@ namespace API.Modules.User
         }
 
 
-        // Get user by id
+        /// <summary>
+        /// Gets the user by identifier {GUID}.
+        /// </summary>
+        /// <param name="userId">The user identifier {ID} to get. {the user with the specified Id}</param>
+        /// <returns>An IActionResult</returns>
         [HttpGet("{userId}", Name = "GetUserById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetUserById(string userId)
         {
             if (!Guid.TryParse(userId, out Guid _))
@@ -72,43 +82,39 @@ namespace API.Modules.User
             }
         }
 
-        // change to use Dto
-        // for update username
-        //[HttpPut("{userId}/username")]
-        //public async Task<IActionResult> UpdateUserName(string userId, [FromBody] UserForUpdateUserNameDto userForUpdateUserNameDto)
-        //{
-        //    if (userId == null || userForUpdateUserNameDto.Username == null)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpPut("{username}")]
+        public async Task<IActionResult> UpdateUsername(string username, [FromBody] UserForUpdateUserNameDto userForUpdateUserNameDto)
+        {
+            try
+            {
+                // Check if the new username is already in use
+                var IsUsernameExists = await _userService.IsUsernameAlreadyExists(userForUpdateUserNameDto.Username);
+                if (IsUsernameExists)
+                {
+                    return BadRequest($"Username \"{userForUpdateUserNameDto.Username}\" is already in use. Please choose another one.");
+                }
 
-        //    if (await _userService.UserAlreadyExist(userForUpdateUserNameDto.Username))
-        //    {
-        //        return BadRequest($"Username \"{userForUpdateUserNameDto.Username}\"  has already been used. Please update to another one.");
-        //    }
-        //    await _userService.UpdateUserNameAsync(userId, userForUpdateUserNameDto.Username);
-        //    return Ok(userForUpdateUserNameDto.Username);
-        //}
+                // Get the user by the current username
+                var usernameToUpdate = await _userService.GetUserByUserNameAsync(username);
+                if (usernameToUpdate == null)
+                {
+                    return NotFound($"User with username \"{username}\" not found.");
+                }
 
-        /****************/
+                // Update the username
+                usernameToUpdate.UserName = userForUpdateUserNameDto.Username;
 
+                // Call the update method in your service to save the changes
+                var updatedUser = await _userService.UpdateUserAsync(usernameToUpdate);
 
-
-        //[HttpPut("{userId}/username")]
-        //public async Task<IActionResult> UpdateUserName(string userId, [FromBody] User userForUpdateDto)
-        //{
-        //    if (userId == null || userForUpdateDto.Username == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (await _userService.UserAlreadyExist(userForUpdateDto.Username))
-        //    {
-        //        return BadRequest($"Username \"{userForUpdateDto.Username}\"  has already been used. Please update to another one.");
-        //    }
-        //    await _userService.UpdateUserNameAsync(userId, userForUpdateDto.Username);
-        //    return Ok(userForUpdateDto.Username);
-        //}
-
+                // Return the updated user's new username directly
+                return Ok(updatedUser);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }

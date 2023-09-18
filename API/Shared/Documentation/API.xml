@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>API</name>
+    </assembly>
+    <members>
+        <member name="T:API.Migrations.Initial">
+            <inheritdoc />
+        </member>
+        <member name="M:API.Migrations.Initial.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:API.Migrations.Initial.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:API.Migrations.Initial.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:API.Modules.User.UserController.Get">
+            <summary>
+            Gets user list as a demo.
+            </summary>
+            <returns> </returns>
+        </member>
+        <member name="M:API.Modules.User.UserController.GetUserById(System.String)">
+            <summary>
+            Gets the user by identifier {GUID}.
+            </summary>
+            <param name="userId">The user identifier {ID} to get. {the user with the specified Id}</param>
+            <returns>An IActionResult</returns>
+        </member>
+    </members>
+</doc>

@@ -24,6 +24,9 @@ namespace API.Profiles
             CreateMap<User, UserPasswordCreationDto>();
 
 
+            // Update username
+            CreateMap<User, UserForUpdateUserNameDto>();
+
             //Update Map
 
             CreateMap<UserForUpdateDto1,User>();

@@ -12,27 +12,33 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using API.Shared.Authentications.Services;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers(options =>
+builder.Services.AddControllers(actionOption =>
 {
-    options.ReturnHttpNotAcceptable = true;  
+    actionOption.ReturnHttpNotAcceptable = true;  
 }).AddXmlDataContractSerializerFormatters();
 builder.Services.AddDbContext<ApplicationDbContext>(actionOptions =>
 {
     actionOptions.UseSqlServer(builder.Configuration.GetConnectionString("PasswordVaultConnection"));
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-//
+
+
+builder.Services.AddSwaggerGen(actionOptions =>
+{
+    var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+    actionOptions.IncludeXmlComments(xmlCommentsFullPath);
+});
 
 //For Identity
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-//builder.Services.AddTransient<IAdminAuthService, AdminAuthService>();
 
 //
 builder.Services.AddScoped<IUserRepository, UserRepository>();

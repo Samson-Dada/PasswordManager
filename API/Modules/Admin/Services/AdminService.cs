@@ -14,7 +14,6 @@ namespace API.Modules.Services
         }
 
 
-        // Get All Users
         public async Task<IEnumerable<SharedUser.User>> GetAllUserAsync()
         {
             var users = await _adminRepository.GetAll();
@@ -22,14 +21,12 @@ namespace API.Modules.Services
         }
 
 
-        // Get User by Id
         public async Task<SharedUser.User> GetUserByIdAsync(string userId)
         {
             var user = await _adminRepository.GetById(userId);
             return user;
         }
 
-        // Get users by paginations
         public async Task<IEnumerable<SharedUser.User>> GetUsersByPagination(int pageNumber, int pageSize)
         {
             var usersPagination = await _adminRepository.GetUsersByPage(pageNumber, pageSize);
